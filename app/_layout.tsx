@@ -1,11 +1,12 @@
 import { Slot, Stack } from 'expo-router'
 import { useFonts } from 'expo-font'
 import * as SplashScreen from 'expo-splash-screen'
-import { useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { KeyboardProvider } from 'react-native-keyboard-controller'
 import 'react-native-reanimated'
 import '../global.css'
 import useIsAuthenticated from '@/hooks/useIsAuthenticated'
+import ReactQueryProvider from '@/providers/ReactQueryProvider'
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync()
@@ -27,7 +28,11 @@ export default function RootLayout() {
   }
 
   return (
-    <KeyboardProvider>{isAuthenticated ? <SignedInStack /> : <SignedOutStack />}</KeyboardProvider>
+    <KeyboardProvider>
+      <ReactQueryProvider>
+        {isAuthenticated ? <SignedInStack /> : <SignedOutStack />}
+      </ReactQueryProvider>
+    </KeyboardProvider>
   )
 }
 
