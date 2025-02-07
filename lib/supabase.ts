@@ -1,7 +1,7 @@
 import { AppState } from 'react-native'
 import 'react-native-url-polyfill/auto'
 import * as SecureStore from 'expo-secure-store'
-import { createClient } from '@supabase/supabase-js'
+import { createClient, SupabaseClient } from '@supabase/supabase-js'
 
 const supabaseUrl = process.env.EXPO_PUBLIC_SUPBASE_URL
 const supabaseAnonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY
@@ -18,12 +18,16 @@ const ExpoSecureStoreAdapter = {
   },
 }
 
+let supabase: SupabaseClient | null = null
+
 export function getSupabaseClient() {
+  if (supabase) return supabase
+
   if (supabaseUrl == null || supabaseAnonKey == null) {
     throw new Error('Missing Supabase URL or Key')
   }
 
-  const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+  supabase = createClient(supabaseUrl, supabaseAnonKey, {
     auth: {
       storage: ExpoSecureStoreAdapter,
       autoRefreshToken: true,
@@ -39,9 +43,9 @@ export function getSupabaseClient() {
   // only be registered once.
   AppState.addEventListener('change', (state) => {
     if (state === 'active') {
-      supabase.auth.startAutoRefresh()
+      supabase?.auth?.startAutoRefresh()
     } else {
-      supabase.auth.stopAutoRefresh()
+      supabase?.auth?.stopAutoRefresh()
     }
   })
 

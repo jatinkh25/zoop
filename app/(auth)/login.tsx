@@ -1,14 +1,12 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { moderateScale, normalizeFont } from '@/utils/scale-utils'
-import { Link } from 'expo-router'
+import { useRouter } from 'expo-router'
 import { StatusBar } from 'expo-status-bar'
-import { ActivityIndicator, Pressable, ScrollView, Text, TextInput, View } from 'react-native'
+import { Pressable, ScrollView, Text, TextInput, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { Ionicons } from '@expo/vector-icons'
 import { useMutation } from '@tanstack/react-query'
 import { getSupabaseClient } from '@/lib/supabase'
-import Loader from '@/components/loader'
-import CustomButton from '@/components/button'
 import Button from '@/components/button'
 import AnimatedLink from '@/components/animated-link'
 
@@ -18,6 +16,7 @@ const defaultErrors = {
 }
 
 const Login = () => {
+  const router = useRouter()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [passwordVisible, setPasswordVisible] = useState(false)
@@ -50,16 +49,26 @@ const Login = () => {
 
     const { data, error } = await mutateAsync({ email, password })
 
-    console.log(data, error)
+    if (error) {
+      console.error(error)
+      return
+    }
+
+    console.log(data)
+    router.replace('/home')
   }
 
   return (
     <SafeAreaView className="flex-1">
-      <ScrollView contentContainerStyle={{ flexGrow: 1 }} keyboardShouldPersistTaps="handled">
+      <ScrollView
+        contentContainerStyle={{ flexGrow: 1 }}
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
+      >
         <View className="py-8 px-6">
           <Text
-            style={{ fontSize: normalizeFont(32) }}
-            className="font-bold max-w-80 text-neutral-800"
+            style={{ fontSize: normalizeFont(36) }}
+            className="font-bold max-w-70 text-neutral-800"
           >
             Login to your account
           </Text>
@@ -76,6 +85,7 @@ const Login = () => {
               autoCapitalize="none"
               autoCorrect={false}
               textContentType="emailAddress"
+              autoComplete="email"
               style={{ fontSize: normalizeFont(16) }}
               placeholder="Enter your email"
               value={email}
@@ -99,6 +109,7 @@ const Login = () => {
                 autoCapitalize="none"
                 autoCorrect={false}
                 textContentType="password"
+                autoComplete="current-password"
                 className="flex-1 p-3"
                 style={{ fontSize: normalizeFont(16) }}
                 placeholder="Password"
@@ -120,11 +131,11 @@ const Login = () => {
             </View>
             {errors.password && <Text className="text-red-500 mt-1">{errors.password}</Text>}
 
-            <Link href="/forgot-password" className="text-primary ml-auto pt-6 font-medium">
-              <Text>Forgot password?</Text>
-            </Link>
+            <AnimatedLink href="/forgot-password" containerClassName="ml-auto pt-6">
+              <Text className="text-primary font-medium">Forgot password?</Text>
+            </AnimatedLink>
 
-            <Button onPress={handleLogin} className="mt-8">
+            <Button isLoading={isPending} onPress={handleLogin} className="mt-8">
               <Text style={{ fontSize: normalizeFont(14) }} className="text-white font-semibold">
                 Sign In
               </Text>
@@ -163,7 +174,7 @@ const Login = () => {
               </Pressable>
             </View>
 
-            <AnimatedLink href="/register" className="flex-row " containerClassName="mt-8 mx-auto">
+            <AnimatedLink href="/register" className="flex-row" containerClassName="mt-8 mx-auto">
               <Text className="text-neutral-700">Don't have an account? </Text>
               <Text className="text-primary">Register</Text>
             </AnimatedLink>

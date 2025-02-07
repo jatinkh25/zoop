@@ -1,10 +1,11 @@
 import React, { useRef, useState } from 'react'
-import { Image, Pressable, ScrollView, Text, View } from 'react-native'
+import { Image, Pressable, ScrollView, Text, TouchableOpacity, View } from 'react-native'
 import { StatusBar } from 'expo-status-bar'
 import AntDesign from '@expo/vector-icons/AntDesign'
 import { moderateScale, normalizeFont } from '@/utils/scale-utils'
 import PagerView from 'react-native-pager-view'
 import { useRouter } from 'expo-router'
+import AnimatedLink from '@/components/animated-link'
 
 const ONBOARDING_STEPS = [
   {
@@ -79,10 +80,17 @@ export default function OnboardingScreen() {
             </PagerView>
 
             <View className="flex flex-row justify-between items-center px-2">
-              <Text style={{ fontSize: normalizeFont(14) }} className="text-white font-semibold">
-                Skip
-              </Text>
-              <Pressable
+              <AnimatedLink
+                href={'/login'}
+                className="flex flex-row gap-2 items-center justify-center"
+              >
+                <Text style={{ fontSize: normalizeFont(14) }} className="text-white font-semibold">
+                  Skip
+                </Text>
+              </AnimatedLink>
+
+              <TouchableOpacity
+                activeOpacity={0.8}
                 onPress={handleNextPress}
                 className="flex flex-row gap-2 items-center justify-center"
               >
@@ -90,7 +98,7 @@ export default function OnboardingScreen() {
                   Next
                 </Text>
                 <AntDesign name="arrowright" size={18} color="white" />
-              </Pressable>
+              </TouchableOpacity>
             </View>
           </View>
         </View>
