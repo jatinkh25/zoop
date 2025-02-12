@@ -1,3 +1,4 @@
+import { cn } from '@/utils/helpers'
 import { Link } from 'expo-router'
 import { PropsWithChildren } from 'react'
 import { View } from 'react-native'
@@ -29,7 +30,7 @@ export default function AnimatedLink({
       onPressOut={() => (opacity.value = 1)}
     >
       <Animated.View style={animatedStyle}>
-        <View className={className}>{children}</View>
+        <View className={cn(className)}>{children}</View>
       </Animated.View>
     </Link>
   )

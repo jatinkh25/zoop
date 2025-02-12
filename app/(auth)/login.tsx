@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { moderateScale, normalizeFont } from '@/utils/scale-utils'
 import { useRouter } from 'expo-router'
 import { StatusBar } from 'expo-status-bar'
@@ -54,7 +54,6 @@ const Login = () => {
       return
     }
 
-    console.log(data)
     router.replace('/home')
   }
 

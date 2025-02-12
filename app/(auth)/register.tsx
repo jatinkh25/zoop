@@ -2,7 +2,7 @@ import { moderateScale, normalizeFont } from '@/utils/scale-utils'
 import { useRouter } from 'expo-router'
 import { StatusBar } from 'expo-status-bar'
 import Checkbox from 'expo-checkbox'
-import { Pressable, ScrollView, Text, TextInput, View } from 'react-native'
+import { Alert, Pressable, ScrollView, Text, TextInput, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useState } from 'react'
 import { Ionicons } from '@expo/vector-icons'
@@ -54,10 +54,11 @@ export default function Register() {
   const handleRegister = async () => {
     if (!validateForm()) return
 
-    const { data, error } = await mutateAsync({ email, password })
-
-    console.log(data, error)
-    console.log(data)
+    const { error } = await mutateAsync({ email, password })
+    if (error) {
+      Alert.alert(error.message)
+      return
+    }
     router.replace('/home')
   }
 

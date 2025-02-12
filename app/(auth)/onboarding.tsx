@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { Image, Pressable, ScrollView, Text, TouchableOpacity, View } from 'react-native'
 import { StatusBar } from 'expo-status-bar'
 import AntDesign from '@expo/vector-icons/AntDesign'
@@ -34,7 +34,6 @@ export default function OnboardingScreen() {
     if (currentPage < ONBOARDING_STEPS.length - 1) {
       pagerRef.current?.setPage(currentPage + 1)
       setCurrentPage(currentPage + 1)
-      console.log('currentPage', currentPage + 1)
     } else {
       // After completing onboarding, navigate to login screen
       router.navigate('/login')
@@ -42,7 +41,7 @@ export default function OnboardingScreen() {
   }
 
   const handlePageSelected = (e: { nativeEvent: { position: number } }) => {
-    console.log('page', e.nativeEvent.position)
+    // console.log('page', e.nativeEvent.position)
     // setCurrentPage(e.nativeEvent.position)
   }
 

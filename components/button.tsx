@@ -7,6 +7,7 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated'
 import Loader from './loader'
+import { cn } from '@/utils/helpers'
 
 interface ButtonProps {
   isLoading?: boolean
@@ -69,10 +70,7 @@ const Button: React.FC<PropsWithChildren<ButtonProps>> = ({
       {/* Animated.View applies the reanimated animations */}
       <Animated.View
         style={[animatedStyle]}
-        className={[
-          'bg-primary py-4 items-center justify-center rounded-md',
-          className,
-        ].join(' ')}
+        className={cn('bg-primary py-4 items-center justify-center rounded-md', className)}
       >
         {isLoading ? <Loader /> : children}
       </Animated.View>
