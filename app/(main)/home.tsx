@@ -11,18 +11,15 @@ import { useInfiniteQuery } from '@tanstack/react-query'
 import { useEffect, useState, useRef } from 'react'
 import { Restaurant } from '@/types/restaurant'
 
-import createApiCall, { GET } from '@/_api'
+import { createApiCall, GET } from '@/_api'
 import { GET_RESTAURANTS } from '@/_api/api.urls'
-import AnimatedLink from '@/components/animated-link'
 
 export const getRestaurants = createApiCall(GET_RESTAURANTS, GET)
 const LIMIT = 10
 
 const { width: screenWidth } = Dimensions.get('window')
 
-interface HomeProps {}
-
-const Home: React.FC<HomeProps> = () => {
+const Home = () => {
   const { top } = useSafeAreaInsets()
   const router = useRouter()
 
@@ -35,7 +32,7 @@ const Home: React.FC<HomeProps> = () => {
   }
 
   const {
-    data: restaurants,
+    data: restaurantsData,
     isLoading,
     hasNextPage,
     isFetchingNextPage,
@@ -54,7 +51,7 @@ const Home: React.FC<HomeProps> = () => {
     initialPageParam: 0,
   })
 
-  const restaurantsData = restaurants?.pages.flat() || []
+  const restaurants = restaurantsData?.pages.flat() || []
 
   const handleLoadMore = () => {
     if (hasNextPage && !isFetchingNextPage) {
@@ -127,29 +124,33 @@ const Home: React.FC<HomeProps> = () => {
           </View>
 
           <View className="px-6 gap-2">
-            {restaurantsData?.map((restaurant) => (
-              <View
+            {restaurants?.map((restaurant) => (
+              <Button
                 key={restaurant.id}
-                className="bg-white rounded-2xl shadow-sm mb-4 overflow-hidden"
+                className="bg-transparent items-stretch justify-start gap-2 py-0"
+                onPress={() => router.push(`/restaurant/${restaurant.id}`)}
               >
-                <View className="relative">
-                  <RestaurantImageCarousel
-                    images={
-                      restaurant.top_menu_items?.map((item) => item.image_url).filter(Boolean) || []
-                    }
-                  />
-                </View>
+                <View className="bg-white rounded-2xl shadow-sm mb-4 overflow-hidden">
+                  <View className="relative">
+                    <RestaurantImageCarousel
+                      images={
+                        restaurant.top_menu_items?.map((item) => item.image_url).filter(Boolean) ||
+                        []
+                      }
+                    />
+                  </View>
 
-                <View className="p-4">
-                  <RestaurantCardContent restaurant={restaurant} />
+                  <View className="p-4">
+                    <RestaurantCardContent restaurant={restaurant} />
+                  </View>
                 </View>
-              </View>
+              </Button>
             ))}
 
             {isFetchingNextPage && (
               <ActivityIndicator size="small" color="#FE8C00" style={{ marginBottom: 20 }} />
             )}
-            {!hasNextPage && restaurantsData.length > 0 && (
+            {!hasNextPage && restaurants.length > 0 && (
               <Text
                 style={{
                   textAlign: 'center',
@@ -161,7 +162,7 @@ const Home: React.FC<HomeProps> = () => {
                 No more restaurants to load
               </Text>
             )}
-            {restaurantsData.length === 0 &&
+            {restaurants.length === 0 &&
               !isLoading &&
               !isFetchingNextPage &&
               status !== 'error' && ( // Added status check to avoid showing "No restaurants found" on initial error
@@ -176,7 +177,7 @@ const Home: React.FC<HomeProps> = () => {
                   No restaurants found
                 </Text>
               )}
-            {status === 'error' && restaurantsData.length === 0 && (
+            {status === 'error' && restaurants.length === 0 && (
               <Text
                 style={{
                   textAlign: 'center',

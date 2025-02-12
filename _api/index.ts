@@ -6,7 +6,7 @@ export const POST = 'post'
 export const PUT = 'put'
 export const DELETE = 'delete'
 
-const createApiCall =
+export const createApiCall =
   (url: string, method: string) =>
   async (params: ApiParamsTypes = {}, headers: HeadersInit = {}): Promise<any> => {
     let apiEndpoint = process.env.EXPO_PUBLIC_API_URL + url
@@ -58,5 +58,3 @@ const createApiCall =
       throw error
     }
   }
-
-export default createApiCall
